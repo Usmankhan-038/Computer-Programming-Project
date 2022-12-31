@@ -41,7 +41,6 @@ int main() {
 		case 2:
 		{
 		system("CLS");
-		cout << "-----------------SignUp Page---------------------" << endl;
 		signup();
 
 		}
@@ -96,42 +95,69 @@ bool signin()
 // Signup function
 void signup()
 {
+	bool flag = false;
 	fstream myfile, MypasswordFile;
 	string username_out, pass_out;
 	string line;
-	myfile.open("user.txt", ios::app);
+	myfile.open("user.txt");
 	if (myfile.is_open())
 	{
 		cout << "------------------Create A New account!-----------------" << endl;
 		cout << "Enter username: ";
 		cin >> username_out;
-		/*while(getline(myfile,line))
+		while (getline(myfile, line))
 		{
-			if (line == username_out)
+			if (username_out == line)
 			{
-				cout << "Invalid";
+				flag = true;
 			}
-		}*/
-		myfile << username_out << endl;
+
+		}
+		if (flag)
+		{
+			system("color 4");
+			cout << "Username Is taken " << endl;
+		}
+		else {
+			system("color 2");
+			myfile << username_out << endl;
+			cout << "Username has been saved";
+			myfile.close();
+			flag = false;
+			MypasswordFile.open("password.txt");
+			if (MypasswordFile.is_open())
+			{
+				cout << "\nEnter Password: ";
+				cin >> pass_out;
+				while (getline(MypasswordFile, line))
+				{
+					if (pass_out == line)
+					{
+						flag = true;
+					}
+
+				}
+				if (flag)
+				{
+					system("color 4");
+					cout << "Password Is taken " << endl;
+				
+				}
+				else {
+					system("color 2");
+
+					MypasswordFile << pass_out << endl;
+					cout << "Your Account has been created";
+				}
+
+			}
+			MypasswordFile.close();
+		}
 		
 
 	}
-	myfile.close();
-	MypasswordFile.open("password.txt", ios::app);
-	if (MypasswordFile.is_open())
-	{
-		cout << "\nEnter Password: ";
-		cin >> pass_out;
-	/*	while (getline(MypasswordFile, line))
-		{
-			if (line != pass_out)
-			{
-				MypasswordFile << pass_out << endl;
-			}
-		}*/
-		MypasswordFile << pass_out << endl;
-	}
-	MypasswordFile.close();
+	
+	
 	return;
 }
 
