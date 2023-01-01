@@ -6,49 +6,61 @@ bool signin();
 void signup();
 void view_tweet();
 void add_tweet();
+void Follower();
 
 int main() {
-	int option;
-	cout << "-------------------Login Page-----------------------"<<endl;
-	cout << "Press 1 For Sign in " << endl;
-	cout << "Press 2 For Sign Up" << endl;
+		int option;
 
-	cout << "\nEnter Option ";
-	cin >> option;
-	switch (option)
-	{
+
+		cout << "-------------------Login Page-----------------------" << endl;
+		cout << "Press 1 For Sign in " << endl;
+		cout << "Press 2 For Sign Up" << endl;
+
+		cout << "\nEnter Option ";
+		cin >> option;
+		switch (option)
+		{
 		case 1:
 		{
-		system("CLS");
-		cout << "-----------------Signin Page---------------------" << endl;
-		if (signin())
-		{
 			system("CLS");
-			view_tweet();
-			cout << endl << endl;
-			cout << "Press 1 for Add Tweet "<<endl;
-			cin >> option;
-
-			if (option == 1)
+			cout << "-----------------Signin Page---------------------" << endl;
+			if (signin())
 			{
 				system("CLS");
-				add_tweet();
+				view_tweet();
+				cout << endl << endl;
+				cout << "Press 1 for Add Tweet: " << endl;
+				cout << "Press 2 For follow a user: " << endl;
+				cout << "\nEnter you choice: ";
+				cin >> option;
+
+				if (option == 1)
+				{
+					system("CLS");
+					add_tweet();
+				}
+				else if (option == 2)
+				{
+					system("CLS");
+					Follower();
+
+				}
 			}
 		}
-		}
 		break;
-		
+
 		case 2:
 		{
-		system("CLS");
-		signup();
+			system("CLS");
+			signup();
 
 		}
 		break;
 		default:
-			cout << "Invalid Option "<<endl;
+			cout << "Invalid Option " << endl;
 			cout << "Try again";
-	}
+		}
+	
 }
 //Signin Function
 bool signin()
@@ -89,7 +101,7 @@ bool signin()
 			}
 
 		}
-		/*cout << "Username is not found " << endl;*/
+		cout << "Username is not found " << endl;
 	}
 }
 // Signup function
@@ -99,7 +111,7 @@ void signup()
 	fstream myfile, MypasswordFile;
 	string username_out, pass_out;
 	string line;
-	myfile.open("user.txt");
+	myfile.open("user.txt", ios::in | ios::app); 
 	if (myfile.is_open())
 	{
 		cout << "------------------Create A New account!-----------------" << endl;
@@ -111,58 +123,55 @@ void signup()
 			{
 				flag = true;
 			}
+			if (!flag)
+			{
+				system("color 2");
+				myfile << username_out << endl;
+			}
+		}
+		if (flag)
+		{
+			system("color 4");
+			cout << "Password Is taken " << endl;
+
+		}
+	}
+	myfile.close();
+	flag = false;
+	MypasswordFile.open("password.txt", ios::in | ios::app);
+	if (MypasswordFile.is_open())
+	{
+		cout << "\nEnter Password: ";
+		cin >> pass_out;
+		while (getline(MypasswordFile, line))
+		{
+			if (pass_out == line)
+			{
+				flag = true;
+			}
+			if (!flag)
+			{
+				system("color 2");
+				MypasswordFile << pass_out << endl;
+
+			}
 
 		}
 		if (flag)
 		{
 			system("color 4");
-			cout << "Username Is taken " << endl;
+			cout << "Password Is taken " << endl;
+			
 		}
-		else {
-			system("color 2");
-			myfile << username_out << endl;
-			cout << "Username has been saved";
-			myfile.close();
-			flag = false;
-			MypasswordFile.open("password.txt");
-			if (MypasswordFile.is_open())
-			{
-				cout << "\nEnter Password: ";
-				cin >> pass_out;
-				while (getline(MypasswordFile, line))
-				{
-					if (pass_out == line)
-					{
-						flag = true;
-					}
-
-				}
-				if (flag)
-				{
-					system("color 4");
-					cout << "Password Is taken " << endl;
-				
-				}
-				else {
-					system("color 2");
-
-					MypasswordFile << pass_out << endl;
-					cout << "Your Account has been created";
-				}
-
-			}
-			MypasswordFile.close();
-		}
-		
-
 	}
-	
-	
+	MypasswordFile.close();
 	return;
 }
 
+
 void view_tweet()
 {
+	int count = 0;
 	fstream tweet_file;
 	string line;
 	tweet_file.open("tweet.txt", ios::in);
@@ -170,11 +179,15 @@ void view_tweet()
 	{
 		while (getline(tweet_file, line))
 		{
-			cout << line << endl;
+			if (count < 12) {
+				cout << line << endl;
+			}
+			count++;
 		}
 	}
 	tweet_file.close();
 }
+//Add tweets in to first page function
 void add_tweet() {
 	fstream add_tweet;
 	string add[5];
@@ -185,11 +198,49 @@ void add_tweet() {
 	{
 		cout << "Your Tweet Must Be 180 character!" << endl;
 		cout << "Type Your Tweet " << endl;
-
 		for (i = 0; i < 5; i++)
 		{
 			cin >> add[i];
-			add_tweet << add[i]<<' ';
+			add_tweet << add[i]<<" ";
+		}
+		system("pause");
+		
+	}
+}
+
+//this function check username to follow and if the user name exist then add username in the follower file else display error;
+void Follower() {
+	fstream myfile,followers_file;
+	string user_name,line;
+	bool flag = false;
+	cout << "Enter username you want to follow:  ";
+	cin >> user_name;
+
+	myfile.open("user.txt", ios::in);
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			if (user_name == line) {
+				flag = true;
+			
+			}
 		}
 	}
+	myfile.close();
+
+		if (flag)
+		{
+			cout << "You follow " << user_name;
+			followers_file.open("followers.txt", ios::app);
+			if (followers_file.is_open())
+			{
+				followers_file << user_name;
+			}
+
+			
+		}
+		else {
+			cout << "Username is not valid";
+		}
 }
