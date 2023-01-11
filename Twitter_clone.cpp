@@ -9,8 +9,8 @@ void view_tweet();
 void add_tweet();
 void Follower();
 void like_tweet();
-void show_account();
-int follower = 0, like = 0;
+int show_account();
+int follower = 0, like =  0;
 string currentuser, current_user_follow[100],current_user_like_tweet[100];
 struct users {        //This Structure is use in signin and signup function
     string username;
@@ -160,15 +160,20 @@ int main() {
                             cout << "\n************************************************************************************************************************" << endl;
                             cout << "                                              ---> Your Account <---                                      " << endl;
                             cout << "\n************************************************************************************************************************" << endl;
-                            show_account();
-                            cout << "1. Back To main menu" << endl;
-                            cout << "2. Logout" << endl;
-                            cout << "3. Continue" << endl;
-                            cout << "Enter Option: ";
-                            cin >> account_option;
-                            if (account_option == 3)
-                            {
-                                continue;
+                            if (show_account()){
+                                cout << "1. Back To main menu" << endl;
+                                    cout << "2. Logout" << endl;
+                                    cout << "3. Continue" << endl;
+                                    cout << "Enter Option: ";
+                                    cin >> account_option;
+                                    if (account_option == 3)
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        account_exit = true;
+                                    }
                             }
                             else
                             {
@@ -200,6 +205,7 @@ int main() {
             cout << "                                         ---> Create Your Account <---                                      " << endl;
             cout << "\n************************************************************************************************************************" << endl;
             signup();
+            system("pause");
 
         }
         else if (option == "3")
@@ -243,8 +249,10 @@ bool signin()
             bool flag_username = false;
             bool flag_password = false;
             int count = 0;
+            cin.ignore();
             cout << "Username: ";
-            cin >> currentuser;
+            getline(cin, currentuser);
+            
             while (count <= i)
             {
 
@@ -253,6 +261,7 @@ bool signin()
 
                     cout << "password: ";
                     cin >> pass.password;
+                    
                     for (int k = 0; k <= i; k++)
                     {
                         if (pass.password == username_and_pass[k])
@@ -304,17 +313,16 @@ void signup()
     int choice;
     users obj;
     string line, line1;
-
-
     bool flag_user_name = false, flag_pass = false;
     myfile.open("user.txt", ios::in);
     if (myfile.is_open())
     {
+        cin.ignore();
         cout << "\nEnter username: ";
-        cin >> obj.username;
-        while (!myfile.eof())
+        getline(cin, obj.username);
+        while (getline(myfile,line, ','))
         {
-            getline(myfile, line, ',');
+           
             if (obj.username == line)
             {
                 flag_user_name = true;
@@ -336,7 +344,7 @@ void signup()
             if (flag_pass)
             {
                 system("color 4b");
-                cout << "Password Is taken " << endl;
+                cout << "Password Is taken" << endl;
 
 
             }
@@ -357,7 +365,7 @@ void signup()
 
 
             system("color 4b");
-            cout << "username or Is taken " << endl;
+            cout << "username or password Is taken " << endl;
 
         }
         else if (flag_user_name == false && flag_pass == false)
@@ -382,7 +390,7 @@ void view_tweet()
     string line, line1, line4;
     usertweet tweets[100] = { " " };
     users user[10], follow[10];
-    long count = 0, i = 0, k = 0, m = 0;
+    int count = 0, i = 0, k = 0, m = 0;
 
     fstream followers;
     string line3;
@@ -404,7 +412,7 @@ void view_tweet()
             }
         }
     }
-
+    followers.close();
     i = 0;
     user_tweets.open("user_tweet.txt", ios::in);
     if (user_tweets.is_open())
@@ -412,7 +420,7 @@ void view_tweet()
         while (getline(user_tweets, line))
         {
             string username, tweet;
-            size_t position = line.find(",");
+            size_t position= line.find(",");
             username = line.substr(0, position);
             tweet = line.substr(position + 1);
 
@@ -420,71 +428,43 @@ void view_tweet()
             tweets[count].tweets = tweet;
             count++;
         }
-
-
-       /* while (i < count && i < 10)
-        {
-            if (tweets[i].username == ::currentuser)
-            {
-                cout << tweets[i].username << endl;
-                int strlen = tweets[i].tweets.length();
-                if (strlen <= 50)
-                {
-                    string tweet_line1 = tweets[i].tweets.substr(0, 50);
-                    cout << tweet_line1 << endl;
-                }
-                else if (strlen > 50 && strlen <= 100)
-                {
-                    string tweet_line1 = tweets[i].tweets.substr(0, 50);
-                    string tweet_line2 = tweets[i].tweets.substr(50, 50);
-                    cout << tweet_line1 << endl;
-                    cout << tweet_line1 << endl;
-
-                }
-                else if (strlen > 100 && strlen <= 150)
-                {
-                    string tweet_line1 = tweets[i].tweets.substr(0, 50);
-                    string tweet_line2 = tweets[i].tweets.substr(50, 50);
-                    string tweet_line3 = tweets[i].tweets.substr(100, 50);
-                    cout << tweet_line1 << endl;
-                    cout << tweet_line2 << endl;
-                    cout << tweet_line3 << endl;
-                }
-                else
-                {
-                    string tweet_line1 = tweets[i].tweets.substr(0, 50);
-                    string tweet_line2 = tweets[i].tweets.substr(50, 50);
-                    string tweet_line3 = tweets[i].tweets.substr(100, 50);
-                    string tweet_line4 = tweets[i].tweets.substr(150, 30);
-                    cout << tweet_line1 << endl;
-                    cout << tweet_line2 << endl;
-                    cout << tweet_line3 << endl;
-                    cout << tweet_line4 << endl;
-
-                }
-                cout << endl;
-                k++;
-            }
-
-            i++;
-        }*/
+        user_tweets.close();
         int tweetnum = 1;
         int j = 0;
         while (j < ::follower)
         {
-            i = 0;
+            
             line4 = current_user_follow[j];
-            while (i < count && i < 10 - k)
+            while (i < count && i <= 10)
             {
                 if (tweets[i].username == line4)
                 {
                     cout << tweets[i].username << endl;
-                     cout << tweets[i].tweets << endl;
-                     cout << tweetnum << endl;
+                    if (tweets[i].tweets.length() <= 60)
+                    {
+                        string line = tweets[i].tweets.substr(0, 60);
+                        cout << line << endl;
+                        cout << tweetnum << endl;
+                    }
+                    else if (tweets[i].tweets.length() > 60 && tweets[i].tweets.length() < 120)
+                    {
+                        string line = tweets[i].tweets.substr(0, 60);
+                        string line1 = tweets[i].tweets.substr(60, 60);
+                        cout << line << endl;
+                        cout << line1 << endl;
+                        cout << tweetnum << endl;
+                    }
+                    else if (tweets[i].tweets.length() > 120 && tweets[i].tweets.length() < 180)
+                    {
+                        string line = tweets[i].tweets.substr(0, 60);
+                        string line1 = tweets[i].tweets.substr(60, 60);
+                        string line2 = tweets[i].tweets.substr(120, 60);
+                        cout << line << endl;
+                        cout << line1 << endl;
+                        cout << line2 << endl;
+                        cout << tweetnum << endl;
+                    }
                      tweetnum++;
-                       
-                    
-                   
                     cout << endl;
                     m++;
                 }
@@ -498,19 +478,40 @@ void view_tweet()
         j = 0;
         /*   tweets[2].tweets = "like " + to_string(like) + " follower " + to_string(followers);*/
 
-        while (k < count && k < 10 - m )
+        while (k < count && k <= 10 - m )
         {
           
 
                 if (!(tweets[i].username == current_user_follow[j]))
                 {
                     cout << tweets[i].username << endl;
-                    cout << tweets[i].tweets << endl;
-                    cout << tweetnum << endl;
+                    if (tweets[i].tweets.length() <= 60)
+                    {
+                        string line = tweets[i].tweets.substr(0, 60);
+                        cout << line << endl;
+                        cout << tweetnum << endl;
+                    }
+                    else if (tweets[i].tweets.length() > 60 && tweets[i].tweets.length() < 120)
+                    {
+                        string line = tweets[i].tweets.substr(0,60);
+                        string line1 = tweets[i].tweets.substr(60, 60);
+                        cout << line << endl;
+                        cout << line1 << endl;
+                        cout << tweetnum << endl;
+                    }
+                    else if (tweets[i].tweets.length() > 120 && tweets[i].tweets.length() < 180)
+                    {
+                        string line = tweets[i].tweets.substr(0,60);
+                        string line1 = tweets[i].tweets.substr(60, 60);
+                        string line2 = tweets[i].tweets.substr(120, 60);
+                        cout << line << endl;
+                        cout << line1 << endl;
+                        cout << line2 << endl;
+                        cout << tweetnum << endl;
+                    }
                     tweetnum++;
-                    
                     cout << endl;
-                  
+                    k++;
 
                 }
                 if (current_user_follow[j] == tweets[i].username)
@@ -518,8 +519,7 @@ void view_tweet()
                     j++;
                 }
             i--;
-            k++;
-
+           
 
         }
     }
@@ -583,7 +583,7 @@ void Follower() {
     string user_file_data[100];
     int i = 0;
 
-    cout << "Enter username you want to follow:  ";
+    cout << "Enter username you want to follow: ";
     cin >> user_follow;
 
     user_file.open("user.txt", ios::in);
@@ -689,12 +689,12 @@ void like_tweet()
     }
 
 }
-void show_account()
+int show_account()
 {
     fstream followers, like_file,user_file;
     usertweet tweets[100] = { " " };
     string line3, line4;
-    string username, Follow, like_tweet, current_user_follows[10], current_user_like_tweet[10];
+    string username, Follow, like_tweet, current_user_follows[10], current_user_like_tweet[10], current_user_like_tweet_2[10];
     int i = 0, choice, j = 0, following = 0, current_user_followers = 0;
     followers.open("followers.txt");
     if (followers.is_open())
@@ -726,6 +726,7 @@ void show_account()
         }
     }
     i = 0;
+    j = 0;
     like_file.open("like_tweet.txt", ios::in);
     if (like_file.is_open())
     {
@@ -742,7 +743,18 @@ void show_account()
                 like++;
                 i++;
             }
-            
+            if (username != ::currentuser)
+            {
+               
+                like_tweet = line3.substr(comma_position + 1);
+                if (Follow == ::currentuser)
+                {
+                    current_user_like_tweet_2[j] = username;
+                    cout << current_user_like_tweet_2[j];
+                    j++;
+                }
+
+            }
 
             
         }
@@ -750,13 +762,12 @@ void show_account()
     
 
     j = 0;
-    cout <<"Username:" << currentuser << endl;
+    cout <<"Username : " << currentuser << endl;
     cout << "Following  " << following << endl;
     cout << "Follower  " << current_user_followers << endl;
     cout << "Like Tweet " << like << endl;
     cout << "Press 1 to Show Following List: " << endl;
     cout << "Press 2 to Show Follower List: " << endl;
-    cout << "Press 3 to Show Like Tweet username List: " << endl;
     cout << "Enter Option: ";
     cin >> choice;
     if (follower > 0)
@@ -787,54 +798,16 @@ void show_account()
             }
             cout << endl;
         }
-        if (like > 0)
-        {
-            if (choice == 3)
-            {
-                j = 0;
-                i = 0;
-                int count = 0;
-                cout << endl;
-                cout << "Name of users You like the tweet" << endl;
-                cout << endl;
-                user_file.open("user_tweet.txt");
-                if (user_file.is_open())
-                {
-                    string line;
-                    while (j < like)
-                    {
-                        user_file.open("user_tweet.txt", ios::in);
-                        if (user_file.is_open())
-                        {
-                            while (getline(user_file, line))
-                            {
-                                string username, tweet;
-                                size_t position = line.find(",");
-                                username = line.substr(0, position);
-                                tweet = line.substr(position + 1);
-
-                                tweets[count].username = username;
-                                tweets[count].tweets = tweet;
-                                count++;
-                            }
-                            while (i < count)
-                            {
-                                if (current_user_like_tweet[j] == tweets[i].username)
-                                {
-                                    cout << tweets[i].username << endl;
-                                    cout << tweets[i].tweets << endl;
-                                }
-                                i++;
-                            }
-                        }
-                        j++;
-                    }
-                }
-            }
-        }
+        
+        return 1;
     }
     else
     {
         cout << "You have no followers yet" << endl;
+        return 1;
+    }
+    if (choice == 3)
+    {
+        return 0;
     }
 }
